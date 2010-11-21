@@ -32,7 +32,7 @@ class Gettext
 #		puts "check_po_validity: size of content = #{content.size}"
 #		p content.class
 		File.open(tempfile_po, 'w') {|f| f.print content }
-		`msgfmt --check #{tempfile_po} 2> #{tempfile}`
+		`msgfmt --check #{tempfile_po} -o - 2> #{tempfile} > /dev/null`
 
 		res = File.read(tempfile)
 #		p '------------------'

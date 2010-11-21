@@ -19,6 +19,28 @@ private
 	end
 end
 
+class Gettext
+	include DRbUndumped
+
+	def check_po_validity(content)
+		tempfile = `tempfile`.strip
+		tempfile_po = tempfile + '.po'
+
+		puts "check_po_validity: size of content = #{content.size}"
+		p content.class
+		File.open(tempfile_po, 'w') {|f| f.print content }
+		`msgfmt --check #{tempfile_po} 2> #{tempfile}`
+
+		res = File.read(tempfile)
+		p '------------------'
+		puts res
+		p '------------------'
+		puts content
+		p '------------------'
+		res.empty? ? nil : res # 'nil' = no errors
+	end
+end
+
 class PoSieve
 	include DRbUndumped
 
@@ -53,10 +75,12 @@ end
 class PoBackend
 	attr_accessor :team_stats
 	attr_accessor :posieve
+	attr_accessor :gettext
 
 	def initialize
 		@team_stats = TeamStats.new
 		@posieve = PoSieve.new
+		@gettext = Gettext.new
 	end
 end
 

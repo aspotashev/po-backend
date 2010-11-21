@@ -3,8 +3,11 @@
 require 'drb'
 require 'xml' # gem install libxml-ruby
 require 'active_support'
+require 'yaml'
 
-REPO_ROOT='~/kde-ru/kde-ru-trunk.git'
+$conf = YAML::load(File.open('config.yml'))
+
+REPO_ROOT=$conf['ru_trunk']
 
 class TeamStats
 	include DRbUndumped
@@ -26,17 +29,17 @@ class Gettext
 		tempfile = `tempfile`.strip
 		tempfile_po = tempfile + '.po'
 
-		puts "check_po_validity: size of content = #{content.size}"
-		p content.class
+#		puts "check_po_validity: size of content = #{content.size}"
+#		p content.class
 		File.open(tempfile_po, 'w') {|f| f.print content }
 		`msgfmt --check #{tempfile_po} 2> #{tempfile}`
 
 		res = File.read(tempfile)
-		p '------------------'
-		puts res
-		p '------------------'
-		puts content
-		p '------------------'
+#		p '------------------'
+#		puts res
+#		p '------------------'
+#		puts content
+#		p '------------------'
 		res.empty? ? nil : res # 'nil' = no errors
 	end
 end
@@ -49,7 +52,7 @@ class PoSieve
 	def check_rules(content)
 		tempfile = `tempfile`.strip
 		File.open(tempfile + '.po', 'w') {|f| f.write(content) }
-		`/home/sasha/pology/scripts/posieve.py check-rules -slang:ru -snomsg #{tempfile + '.po'} -sxml:#{tempfile + '.xml'}`
+		`#{$conf['pology_path']}/scripts/posieve.py check-rules -slang:ru -snomsg #{tempfile + '.po'} -sxml:#{tempfile + '.xml'}`
 		xml = File.open(tempfile + '.xml').read
 
 

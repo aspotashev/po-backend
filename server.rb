@@ -2,6 +2,7 @@
 
 require 'drb'
 require 'xml' # gem install libxml-ruby
+require 'active_support'
 
 REPO_ROOT='~/kde-ru/kde-ru-trunk.git'
 
@@ -20,6 +21,8 @@ end
 
 class PoSieve
 	include DRbUndumped
+
+	extend ActiveSupport::Memoizable
 
 	def check_rules(content)
 		tempfile = `tempfile`.strip
@@ -43,6 +46,8 @@ class PoSieve
 			h
 		end
 	end
+
+	memoize :check_rules
 end
 
 class PoBackend

@@ -2,7 +2,7 @@
 
 require 'drb'
 require 'xml' # gem install libxml-ruby
-require 'active_support'
+require 'active_support' # from Ruby on Rails
 require 'yaml'
 
 $conf = YAML::load(File.open('config.yml'))
@@ -29,17 +29,10 @@ class Gettext
 		tempfile = `tempfile`.strip
 		tempfile_po = tempfile + '.po'
 
-#		puts "check_po_validity: size of content = #{content.size}"
-#		p content.class
 		File.open(tempfile_po, 'w') {|f| f.print content }
 		`msgfmt --check #{tempfile_po} -o - 2> #{tempfile} > /dev/null`
 
 		res = File.read(tempfile)
-#		p '------------------'
-#		puts res
-#		p '------------------'
-#		puts content
-#		p '------------------'
 		res.empty? ? nil : res # 'nil' = no errors
 	end
 end

@@ -56,8 +56,7 @@ class PoSieve
 		xml = File.open(tempfile + '.xml').read
 
 
-		parser = XML::Parser.new
-		parser.string = xml
+		parser = XML::Parser.string(xml)
 		doc = parser.parse
 
 

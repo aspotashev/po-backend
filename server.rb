@@ -5,7 +5,7 @@ require 'xml' # gem install libxml-ruby
 require 'active_support' # from Ruby on Rails
 require 'yaml'
 
-$conf = YAML::load(File.open('config.yml'))
+$conf = YAML::load(File.open(ARGV[0] || 'config.yml'))
 
 REPO_ROOT=$conf['ru_trunk']
 

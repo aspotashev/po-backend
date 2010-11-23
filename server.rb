@@ -38,6 +38,10 @@ class Gettext
 		`msgfmt --check #{tempfile_po} -o - 2> #{tempfile} > /dev/null`
 
 		res = File.read(tempfile)
+
+		`rm -f #{tempfile}`
+		`rm -f #{tempfile_po}`
+
 		res.empty? ? nil : res # 'nil' = no errors
 	end
 end
@@ -53,6 +57,8 @@ class PoSieve
 		`#{$conf['pology_path']}/scripts/posieve.py check-rules -slang:ru -snomsg #{tempfile + '.po'} -sxml:#{tempfile + '.xml'}`
 		xml = File.open(tempfile + '.xml').read
 
+		`rm -f #{tempfile + '.xml'}`
+		`rm -f #{tempfile + '.po'}`
 
 		parser = XML::Parser.string(xml)
 		doc = parser.parse

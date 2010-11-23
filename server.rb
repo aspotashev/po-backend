@@ -23,7 +23,8 @@ private
 end
 
 def get_tempfile
-	`tempfile`.strip
+	'/tmp/po-backend-' + Time.now.to_i.to_s + rand.to_s
+#	`tempfile`.strip
 end
 
 class Gettext

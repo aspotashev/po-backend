@@ -22,11 +22,15 @@ private
 	end
 end
 
+def get_tempfile
+	`tempfile`.strip
+end
+
 class Gettext
 	include DRbUndumped
 
 	def check_po_validity(content)
-		tempfile = `tempfile`.strip
+		tempfile = get_tempfile
 		tempfile_po = tempfile + '.po'
 
 		File.open(tempfile_po, 'w') {|f| f.print content }
@@ -43,7 +47,7 @@ class PoSieve
 	extend ActiveSupport::Memoizable
 
 	def check_rules(content)
-		tempfile = `tempfile`.strip
+		tempfile = get_tempfile
 		File.open(tempfile + '.po', 'w') {|f| f.write(content) }
 		`#{$conf['pology_path']}/scripts/posieve.py check-rules -slang:ru -snomsg #{tempfile + '.po'} -sxml:#{tempfile + '.xml'}`
 		xml = File.open(tempfile + '.xml').read

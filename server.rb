@@ -82,6 +82,6 @@ end
 DRb.start_service 'drbunix:///tmp/po-backend-unix-socket', PoBackend.new
 puts "Server running at #{DRb.uri}"
 
-trap("INT") { DRb.stop_service }
+#trap("INT") { DRb.stop_service }
 DRb.thread.join
 

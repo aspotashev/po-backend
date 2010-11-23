@@ -79,7 +79,7 @@ class PoBackend
 	end
 end
 
-DRb.start_service 'druby://:9000', PoBackend.new
+DRb.start_service 'drbunix:///tmp/po-backend-unix-socket', PoBackend.new
 puts "Server running at #{DRb.uri}"
 
 trap("INT") { DRb.stop_service }

@@ -52,6 +52,8 @@ class PoSieve
 	extend ActiveSupport::Memoizable
 
 	def check_rules(content)
+		puts "check_rules: begin"
+
 		tempfile = get_tempfile
 		File.open(tempfile + '.po', 'w') {|f| f.write(content) }
 		`#{$conf['pology_path']}/scripts/posieve.py check-rules -slang:ru -snomsg #{tempfile + '.po'} -sxml:#{tempfile + '.xml'}`
@@ -73,6 +75,8 @@ class PoSieve
 
 			h
 		end
+
+		puts "check_rules: end"
 	end
 
 	memoize :check_rules # we can remove this, because the Rails application should can results itself (e.g., in a database)

@@ -78,7 +78,7 @@ class PoSieve
 		doc = parser.parse
 
 
-		doc.find('//error').map do |err|
+		res = doc.find('//error').map do |err|
 			h = {}
 
 			err.find('*').each do |arg|
@@ -89,6 +89,7 @@ class PoSieve
 		end
 
 		$log.info "check_rules: end"
+		res
 	end
 
 	memoize :check_rules # we can remove this, because the Rails application should can results itself (e.g., in a database)

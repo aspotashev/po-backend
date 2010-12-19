@@ -4,10 +4,22 @@ require 'drb'
 require 'xml' # gem install libxml-ruby
 require 'active_support' # from Ruby on Rails
 require 'yaml'
+require 'logger'
 
 $conf = YAML::load(File.open(ARGV[0] || 'config.yml'))
 
 REPO_ROOT=$conf['ru_trunk']
+
+# http://stackoverflow.com/questions/224512/redirect-the-puts-command-output-to-a-log-file
+# http://www.ruby-doc.org/core/classes/Logger.html
+$log = Logger.new("/tmp/po-backend.log")
+$log.level = Logger::DEBUG
+
+$stdout.reopen("/tmp/po-backend.log.stdout", 'w')
+$stdout.sync = true
+$stderr.reopen("/tmp/po-backend.log.stderr", 'w')
+$stderr.sync = true
+
 
 class TeamStats
 	include DRbUndumped
@@ -52,7 +64,7 @@ class PoSieve
 	extend ActiveSupport::Memoizable
 
 	def check_rules(content)
-		puts "check_rules: begin"
+		$log.info "check_rules: begin"
 
 		tempfile = get_tempfile
 		File.open(tempfile + '.po', 'w') {|f| f.write(content) }
@@ -76,7 +88,7 @@ class PoSieve
 			h
 		end
 
-		puts "check_rules: end"
+		$log.info "check_rules: end"
 	end
 
 	memoize :check_rules # we can remove this, because the Rails application should can results itself (e.g., in a database)
@@ -94,9 +106,11 @@ class PoBackend
 	end
 end
 
+`rm -f /tmp/po-backend-unix-socket`
 DRb.start_service 'drbunix:///tmp/po-backend-unix-socket', PoBackend.new
-puts "Server running at #{DRb.uri}"
+$log.info "Server running at #{DRb.uri}"
 
 #trap("INT") { DRb.stop_service }
+
 DRb.thread.join
 

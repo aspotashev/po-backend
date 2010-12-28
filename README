@@ -1,0 +1,12 @@
+== What is po-backend
+'po-backend' is a DRb service that provides a Ruby interface to
+Pology (for checking translation files using custom rules) and
+Gettext (for checking translation file for validity).
+
+== How to start the DRb service
+You can either run po-backend as a console application:
+ ./server.rb
+
+or start/stop it as a daemon:
+ ./server_control.rb start
+ ./server_control.rb stop

@@ -68,7 +68,7 @@ class PoSieve
 
 		tempfile = get_tempfile
 		File.open(tempfile + '.po', 'w') {|f| f.write(content) }
-		`#{$conf['pology_path']}/scripts/posieve.py check-rules -slang:ru -snomsg #{tempfile + '.po'} -sxml:#{tempfile + '.xml'}`
+		`#{$conf['pology_path']}/scripts/posieve.py check-rules --skip-obsolete -slang:ru -snomsg #{tempfile + '.po'} -sxml:#{tempfile + '.xml'}`
 		xml = File.open(tempfile + '.xml').read
 
 		`rm -f #{tempfile + '.xml'}`

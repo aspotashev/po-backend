@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/ruby18
 
 require 'drb'
 require 'xml' # gem install libxml-ruby

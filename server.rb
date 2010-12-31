@@ -82,7 +82,11 @@ class PoSieve
 			h = {}
 
 			err.find('*').each do |arg|
-				h = h.merge({ arg.name.to_sym => arg.content })
+				if arg.name == 'highlight'
+					h = h.merge({ :highlight => (arg.attributes[:begin].to_i...arg.attributes[:end].to_i) })
+				else
+					h = h.merge({ arg.name.to_sym => arg.content })
+				end
 			end
 
 			h

@@ -63,6 +63,24 @@ class PoSieve
 
 	extend ActiveSupport::Memoizable
 
+	def recalc_offset(offset, msgstr)
+		return offset # disable recalculation for now
+
+
+		res = []
+		s = nil
+		index = 0
+
+		allowed_chars = /[^a-zA-Z&áňŠěéČć³²]/ # see pology/lang/ru/rules/check-spell.rules
+		while (s = msgstr[index..-1]).index(allowed_chars)
+			index += s.index(allowed_chars)
+			res << index
+			index += 1
+		end
+
+		res[offset] || offset
+	end
+
 	def check_rules(content)
 		$log.info "check_rules: begin"
 
@@ -83,7 +101,11 @@ class PoSieve
 
 			err.find('*').each do |arg|
 				if arg.name == 'highlight'
-					h = h.merge({ :highlight => (arg.attributes[:begin].to_i...arg.attributes[:end].to_i) })
+					msgstr = err.find('msgstr')[0].content
+					msgstr_begin = recalc_offset(arg.attributes[:begin].to_i, msgstr)
+					msgstr_end = recalc_offset(arg.attributes[:end].to_i, msgstr)
+
+					h = h.merge({ :highlight => (msgstr_begin...msgstr_end) })
 				else
 					h = h.merge({ arg.name.to_sym => arg.content })
 				end

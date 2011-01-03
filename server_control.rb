@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/ruby19
 
 require 'rubygems'
 require 'daemons'

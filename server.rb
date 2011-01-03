@@ -122,15 +122,32 @@ class PoSieve
 	memoize :check_rules # we can remove this, because the Rails application should can results itself (e.g., in a database)
 end
 
+class ISearch
+	include DRbUndumped
+
+	def initialize
+		@conf = $conf['isearch']
+
+		require @conf['binary_ruby_module']
+		IndexSearch.init(@conf['dump'], @conf['dump_index'], @conf['dump_map'])
+	end
+
+	def find(s, n)
+		IndexSearch.find(s, n)
+	end
+end
+
 class PoBackend
 	attr_accessor :team_stats
 	attr_accessor :posieve
 	attr_accessor :gettext
+	attr_accessor :isearch
 
 	def initialize
 		@team_stats = TeamStats.new
 		@posieve = PoSieve.new
 		@gettext = Gettext.new
+		@isearch = ISearch.new
 	end
 end
 

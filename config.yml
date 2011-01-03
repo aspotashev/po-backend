@@ -1,2 +1,7 @@
 ru_trunk: ~/kde-ru/kde-ru-trunk.git
 pology_path: /home/sasha/pology
+isearch:
+  binary_ruby_module: /home/sasha/python-l10n-db-server/isearch/ruby-ext/isearch
+  dump: /home/sasha/python-l10n-db-server/dump.dat
+  dump_index: /home/sasha/python-l10n-db-server/dump-index.dat
+  dump_map: /home/sasha/python-l10n-db-server/dump-map.txt

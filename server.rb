@@ -1,4 +1,5 @@
 #!/usr/bin/ruby19
+# encoding: utf-8
 
 require 'drb'
 require 'xml' # gem install libxml-ruby

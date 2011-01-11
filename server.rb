@@ -115,8 +115,6 @@ class PoSieve
 		$log.info "check_rules: end"
 		res
 	end
-
-	memoize :check_rules # we can remove this, because the Rails application should can results itself (e.g., in a database)
 end
 
 class ISearch

@@ -65,14 +65,11 @@ class PoSieve
 	extend ActiveSupport::Memoizable
 
 	def recalc_offset(offset, msgstr)
-		return offset # disable recalculation for now
-
-
 		res = []
 		s = nil
 		index = 0
 
-		allowed_chars = /[^a-zA-Z&áňŠěéČć³²]/ # see pology/lang/ru/rules/check-spell.rules
+		allowed_chars = /[^a-zA-Z&áňŠěéČć³²]/u # see pology/lang/ru/rules/check-spell.rules
 		while (s = msgstr[index..-1]).index(allowed_chars)
 			index += s.index(allowed_chars)
 			res << index

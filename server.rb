@@ -59,64 +59,6 @@ class Gettext
 	end
 end
 
-class PoSieve
-	include DRbUndumped
-
-	extend ActiveSupport::Memoizable
-
-	def recalc_offset(offset, msgstr)
-		res = []
-		s = nil
-		index = 0
-
-		allowed_chars = /[^a-zA-Z&áňŠěéČć³²]/u # see pology/lang/ru/rules/check-spell.rules
-		while (s = msgstr[index..-1]).index(allowed_chars)
-			index += s.index(allowed_chars)
-			res << index
-			index += 1
-		end
-
-		res[offset] || offset
-	end
-
-	def check_rules(content)
-		$log.info "check_rules: begin"
-
-		tempfile = get_tempfile
-		File.open(tempfile + '.po', 'w') {|f| f.write(content) }
-		`#{$conf['pology_path']}/scripts/posieve.py check-rules --skip-obsolete -slang:ru -snomsg #{tempfile + '.po'} -sxml:#{tempfile + '.xml'}`
-		xml = File.open(tempfile + '.xml').read
-
-		`rm -f #{tempfile + '.xml'}`
-		`rm -f #{tempfile + '.po'}`
-
-		parser = XML::Parser.string(xml)
-		doc = parser.parse
-
-
-		res = doc.find('//error').map do |err|
-			h = {}
-
-			err.find('*').each do |arg|
-				if arg.name == 'highlight'
-					msgstr = err.find('msgstr')[0].content
-					msgstr_begin = recalc_offset(arg.attributes[:begin].to_i, msgstr)
-					msgstr_end = recalc_offset(arg.attributes[:end].to_i, msgstr)
-
-					h = h.merge({ :highlight => (msgstr_begin...msgstr_end) })
-				else
-					h = h.merge({ arg.name.to_sym => arg.content })
-				end
-			end
-
-			h
-		end
-
-		$log.info "check_rules: end"
-		res
-	end
-end
-
 class ISearch
 	include DRbUndumped
 
@@ -134,13 +76,11 @@ end
 
 class PoBackend
 	attr_accessor :team_stats
-	attr_accessor :posieve
 	attr_accessor :gettext
 	attr_accessor :isearch
 
 	def initialize
 		@team_stats = TeamStats.new
-		@posieve = PoSieve.new
 		@gettext = Gettext.new
 		@isearch = ISearch.new
 	end

@@ -39,25 +39,6 @@ def get_tempfile
 #	`tempfile`.strip
 end
 
-class Gettext
-	include DRbUndumped
-
-	def check_po_validity(content)
-		tempfile = get_tempfile
-		tempfile_po = tempfile + '.po'
-
-		File.open(tempfile_po, 'w') {|f| f.print content }
-		`msgfmt --check #{tempfile_po} -o - 2> #{tempfile} > /dev/null`
-
-		res = File.read(tempfile)
-
-		`rm -f #{tempfile}`
-		`rm -f #{tempfile_po}`
-
-		res.empty? ? nil : res # 'nil' = no errors
-	end
-end
-
 class ISearch
 	include DRbUndumped
 
@@ -75,12 +56,10 @@ end
 
 class PoBackend
 	attr_accessor :team_stats
-	attr_accessor :gettext
 	attr_accessor :isearch
 
 	def initialize
 		@team_stats = TeamStats.new
-		@gettext = Gettext.new
 		@isearch = ISearch.new
 	end
 end

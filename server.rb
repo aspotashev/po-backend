@@ -2,7 +2,6 @@
 # encoding: utf-8
 
 require 'drb'
-require 'xml' # gem install libxml-ruby
 require 'active_support' # from Ruby on Rails
 require 'yaml'
 require 'logger'

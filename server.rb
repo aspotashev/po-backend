@@ -4,21 +4,10 @@
 require 'drb'
 require 'active_support' # from Ruby on Rails
 require 'yaml'
-require 'logger'
 
 $conf = YAML::load(File.open(ARGV[0] || File.join(File.dirname(__FILE__), 'config.yml')))
 
 REPO_ROOT=$conf['ru_trunk']
-
-# http://stackoverflow.com/questions/224512/redirect-the-puts-command-output-to-a-log-file
-# http://www.ruby-doc.org/core/classes/Logger.html
-$log = Logger.new("/tmp/po-backend.log")
-$log.level = Logger::DEBUG
-
-$stdout.reopen("/tmp/po-backend.log.stdout", 'w')
-$stdout.sync = true
-$stderr.reopen("/tmp/po-backend.log.stderr", 'w')
-$stderr.sync = true
 
 
 class TeamStats
@@ -66,7 +55,6 @@ end
 
 `rm -f /tmp/po-backend-unix-socket`
 DRb.start_service 'drbunix:///tmp/po-backend-unix-socket', PoBackend.new
-$log.info "Server running at #{DRb.uri}"
 
 #trap("INT") { DRb.stop_service }
 

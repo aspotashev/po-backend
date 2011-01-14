@@ -6,7 +6,7 @@ require 'active_support' # from Ruby on Rails
 require 'yaml'
 require 'logger'
 
-$conf = YAML::load(File.open(ARGV[0] || 'config.yml'))
+$conf = YAML::load(File.open(ARGV[0] || File.join(File.dirname(__FILE__), 'config.yml')))
 
 REPO_ROOT=$conf['ru_trunk']
 
